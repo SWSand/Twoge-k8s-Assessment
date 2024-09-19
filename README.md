@@ -200,7 +200,7 @@ Twoge is a simple Twitter alternative built with Python Flask. The goal of this 
 
 ## 🎯 Architecture Diagram
 
-![Twoge Kubernetes Deployment Architecture](diagram-placeholder.png)
+![Twoge Kubernetes Deployment Architecture](./k8s/Diagram.png)
 
 ### Description:
 - **Minikube Deployment**: Twoge app and PostgreSQL deployed on Minikube.
