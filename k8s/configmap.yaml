@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: twoge-config
+  namespace: jose
+data:
+  DB_TYPE: "postgres"
+  DB_HOST: "twoge-db-service.jose.svc.cluster.local"
+  DB_PORT: "5432"

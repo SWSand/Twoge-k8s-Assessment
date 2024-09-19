@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: twoge-db-service
+  namespace: jose
+spec:
+  selector:
+    app: twoge-db
+  ports:
+    - protocol: TCP
+      port: 5432
+  type: ClusterIP

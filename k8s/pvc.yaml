@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: twoge-pvc
+  namespace: jose
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: twoge-storage-jose
+  resources:
+    requests:
+      storage: 1Gi

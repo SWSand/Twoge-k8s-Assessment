@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twoge-db-deployment
+  namespace: jose
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: twoge-db
+  template:
+    metadata:
+      labels:
+        app: twoge-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: twoge-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: twoge-secrets
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: twoge-secrets
+              key: POSTGRES_DB
+        - name: PGDATA
+          value: /var/lib/postgresql/pgdata 
+        startupProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+            exec:
+              command:
+                - pg_isready
+                - -q 
+                - -d 
+                - $(POSTGRES_DB) 
+                - -U 
+                - $(POSTGRES_USER)
+        volumeMounts:
+          - name: db-storage
+            mountPath: /var/lib/postgresql
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: twoge-pvc

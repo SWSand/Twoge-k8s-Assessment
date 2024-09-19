@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twoge-deployment
+  namespace: jose
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: twoge
+  template:
+    metadata:
+      labels:
+        app: twoge
+    spec:
+      containers:
+        - name: twoge
+          image: swsand/twoge-kube
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+          env:
+          - name: DB_TYPE
+            valueFrom:
+              configMapKeyRef:
+                name: twoge-config
+                key: DB_TYPE
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: twoge-config
+                key: DB_HOST
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                name: twoge-secrets
+                key: POSTGRES_DB
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: twoge-secrets
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: twoge-secrets
+                key: POSTGRES_PASSWORD
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: twoge-config
+                key: DB_PORT
+          - name: SQLALCHEMY_DATABASE_URI
+            value: "$(DB_TYPE)://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(POSTGRES_DB)"
+          # livenessProbe: 
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 5
+          #   timeoutSeconds: 10
+          #   successThreshold: 1
+          #   failureThreshold: 5
